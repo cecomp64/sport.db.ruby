@@ -26,6 +26,8 @@ class Team < ActiveRecord::Base
   # note: team belongs_to a single (optinal) assoc for now (national assoc may have many assocs)
   belongs_to :assoc
 
+  has_many :stats, :through => :stat_data
+
   ### fix!!! - how to do it with has_many macro? use finder_sql?
   ##  finder_sql is depreciated in Rails 4!!!
   #   use -> { where()  } etc.  -- try it if it works

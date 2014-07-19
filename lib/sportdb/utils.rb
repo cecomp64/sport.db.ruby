@@ -47,7 +47,82 @@ module SportDb
     find_leading_pos!( line )
   end
 
+  # Parse out stats format
+  # $$ statKey: value, statKey: value
+  # Assumes stats apply to a person or a game
+  # Create a stats object if one does not exist for this
+  # person/game.  Update the corresponding statistic
+  #
+  # Returns true if this line is a stats line
+  def parse_stats (line, event, person=nil, game=nil)
 
+    # For simplicity, have stat lines start with $$
+    if (not (line =~ /^\$\$/))
+      return false
+    end
+
+    if (person == nil and game == nil)
+      logger.error " !!!!!! No person or game to match stats with line: #{line}"
+      # Return true to skip the line
+      return true
+    end
+
+    # Parse out components
+    line.sub!("$$","").strip!
+    stats_l = line.split(",")
+
+    logger.debug "   stats_l: #{stats_l}"
+
+    stats_l.each do |stat_s|
+      logger.debug "   stat_s: #{stat_s}"
+      components_l = stat_s.split(":")
+      if (components_l[1] == nil)
+        logger.error " !!!!!! Malformed stats line: #{stat_s}"
+        next
+      end
+
+      # Stat values
+      stat_key = components_l[0]
+
+      # Find or create a stat
+      stat = Model::Stat.find_by_key(stat_key)
+      if (stat == nil)
+        stat = Model::Stat.create(key: stat_key, title: stat_key)
+      end
+
+      logger.debug "   Using stat: #{stat.title}"
+
+      # Find or create stat_data
+      stat_data = nil
+      stat_data_attr = {
+        value: components_l[1],
+        event_id: event.id,
+        stat_id: stat.id
+      }
+
+      # Could be a person stat, team stat, game stat, or event stat
+      # TBD: Support team stat and event-only stat properly
+      if (person != nil)
+        stat_data_attr[:person_id] = person.id
+        stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id(event.id, person.id, stat.id)
+      else # game
+        stat_data_attr[:game_id] = game.id
+        stat_data = Model::StatData.find_by_event_id_and_game_id_and_stat_id(event.id, game.id, stat.id)
+      end
+
+      # Create or update stat
+      if (stat_data == nil)
+        stat_data = Model::StatData.create(stat_data_attr)
+      else
+        stat_data = Model::StatData.update_attributes!(stat_data_attr)
+      end
+
+      logger.debug "   Saved stat_data: #{stat_data.to_s}"
+
+    end # each stat
+
+    return true
+  end
 
   end # module FixtureHelpers
 end # module SportDb

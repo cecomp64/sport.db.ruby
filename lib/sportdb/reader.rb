@@ -98,7 +98,7 @@ class Reader
       #   need to read event first and pass along to read (event_id: event.id) etc.
       reader = RaceReader.new( include_path )
       reader.read( name )
-    elsif name =~ /\/squads\/([a-z]{2,3})-[^\/]+$/
+    elsif name =~ /\/squads\/([a-z]+)-[^\/]+$/
       ## fix: add to country matcher new format
       ##   name is country! and parent folder is type name e.g. /squads/br-brazil
       

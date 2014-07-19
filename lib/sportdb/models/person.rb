@@ -12,6 +12,7 @@ module PersonDb
 class Person
 
   has_many :goals
+  has_many :stats, :through => :stat_data
 
 end  # class Person
 

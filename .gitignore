@@ -28,3 +28,6 @@ doc/
 
 build
 build/
+
+*.swp
+*.swo

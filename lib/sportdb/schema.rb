@@ -411,6 +411,23 @@ create_table :alltime_standing_entries do |t|
   t.timestamps
 end
 
+create_table :stats do |t|
+  t.string     :key
+  t.string     :title
+  t.timestamps
+end
+
+
+create_table :stat_data do |t|
+  t.references  :team
+  t.references  :game
+  t.references  :event
+  t.references  :stat
+  t.integer     :person_id
+  t.string      :value
+  t.timestamps
+end
+
 
   end  # Schema.define
 end # method up

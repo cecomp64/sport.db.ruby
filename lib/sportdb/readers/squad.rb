@@ -82,12 +82,21 @@ class SquadReader
     ## fix: use num (optional) for offical jersey number
     #  use pos for internal use only (ordering)
 
+    # Track the last person object for updating stats
+    last_person = nil
+
     pos_counter = 999000   # pos counter for undefined players w/o pos
 
     reader.each_line do |line|
       logger.debug "  line: >#{line}<"
 
       cut_off_end_of_line_comment!( line )
+
+      # Check for a stats line
+      if (parse_stats(line, @event, last_person, nil))
+        # Stats will be their own line following a player
+        next
+      end
 
       pos = find_leading_pos!( line )
 
@@ -130,6 +139,7 @@ class SquadReader
         logger.info "   using attribs: #{person_attribs.inspect}"
 
         person = Person.create!( person_attribs )
+        last_person = person
       else
         person = Person.find_by_key( person_key )
 
@@ -137,6 +147,8 @@ class SquadReader
           logger.error " !!!!!! no mapping found for player in line >#{line}< for team #{@team.code} - #{@team.title}"
           next   ## skip further processing of line; can NOT save w/o person; continue w/ next record
         end
+
+        last_person = person
       end
 
 
