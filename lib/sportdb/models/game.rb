@@ -15,7 +15,8 @@ class Game < ActiveRecord::Base
   belongs_to :city,  class_name: 'WorldDb::Model::City', foreign_key: 'city_id'   # city   is optioanl (remove?? redundant?? use ground ??)
 
   has_many :goals, :dependent => :delete_all
-  has_many :stats, :through => :stat_data
+  has_many :stats, :through => :stat_data, class_name: 'StatData'
+  has_many :stat_data, class_name: 'StatData'
 
 
   before_save :calc_winner

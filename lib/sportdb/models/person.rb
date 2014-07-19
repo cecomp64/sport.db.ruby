@@ -12,7 +12,8 @@ module PersonDb
 class Person
 
   has_many :goals
-  has_many :stats, :through => :stat_data
+  has_many :stats, :through => :stat_data, class_name: 'SportDb::Model::StatData'
+  has_many :stat_data, class_name: 'SportDb::Model::StatData'
 
 end  # class Person
 
