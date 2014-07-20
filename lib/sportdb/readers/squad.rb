@@ -95,6 +95,7 @@ class SquadReader
       # Check for a stats line
       if (parse_stats(line, @event, last_person, nil))
         # Stats will be their own line following a player
+        logger.debug "   Parsed stats from line, moving to next line: #{line}"
         next
       end
 

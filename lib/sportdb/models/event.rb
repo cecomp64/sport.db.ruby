@@ -24,7 +24,7 @@ end
   has_many :event_grounds,  class_name: 'EventGround'
   has_many :grounds, :through => :event_grounds
 
-  has_many :stats, :through => :stat_data, class_name: 'StatData'
+  #has_many :stats, :through => :stat_data, class_name: 'StatData'
   has_many :stat_data, class_name: 'StatData'
 
 

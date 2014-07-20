@@ -112,12 +112,15 @@ module SportDb
 
       # Create or update stat
       if (stat_data == nil)
+        logger.debug "   No stat data found for #{stat.key}, creating a new one"
         stat_data = Model::StatData.create(stat_data_attr)
       else
+        logger.debug "   Using existing stat data: #{stat_data.inspect}"
         stat_data = Model::StatData.update_attributes!(stat_data_attr)
       end
 
-      logger.debug "   Saved stat_data: #{stat_data.to_s}"
+      # Stats not getting parsed correctly... print out stat and value
+      logger.debug "   Saved stat_data: #{stat_data.inspect}"
 
     end # each stat
 
