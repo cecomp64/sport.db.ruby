@@ -28,6 +28,7 @@ class Team < ActiveRecord::Base
 
   #has_many :stats, :through => :stat_data, class_name: 'StatData'
   has_many :stat_data, class_name: 'StatData'
+  has_many :team_stats
 
   ### fix!!! - how to do it with has_many macro? use finder_sql?
   ##  finder_sql is depreciated in Rails 4!!!

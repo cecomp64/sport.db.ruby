@@ -60,6 +60,8 @@ require 'sportdb/models/team_comp'
 require 'sportdb/models/track'
 require 'sportdb/models/stat'
 require 'sportdb/models/stat_data'
+require 'sportdb/models/team_stat'
+require 'sportdb/models/player_stat'
 
 require 'sportdb/models/stats/alltime_standing'
 require 'sportdb/models/stats/alltime_standing_entry'

@@ -81,34 +81,68 @@ module SportDb
         next
       end
 
-      # Stat values
-      stat_key = components_l[0]
+      parse_player_stat(components_l[0].strip, components_l[1].strip, event.id, person.id)
 
-      # Find or create a stat
-      stat = Model::Stat.find_by_key(stat_key)
-      if (stat == nil)
-        stat = Model::Stat.create(key: stat_key, title: stat_key)
+    end # each stat
+
+    return true
+  end
+
+  # Try to match 'key' with a field in the player_stats table
+  # return nil on failure
+  def map_player_stat_field(key)
+    case key
+      # Identity mapping
+      when "starts", "subIns", "saves", "goalsConceded", "foulsCommitted", "foulsSuffered", "yellowCards", "redCards", "wins", "losses", "draws", "totalGoals", "totalShots", "shotsOnTarget", "goalAssists"
+        return key
+      # Any aliases...
+    #default
+    else
+      return nil
+    end
+  end
+
+  # Handle stat parsing for players
+  #   game, person not nil => A player's performance in a game... team implied?
+  #   team, person, event not nil => A player's performance in a season on one team
+  #   person, event not nil => A player's performance in a season across all teams
+  #   person not nil => A player's all-time performance across all teams
+  def parse_player_stat(stat_key, stat_value, event_id=nil, person_id=nil, team_id=nil, game_id=nil)
+    # Try to map this to a stat_field
+    stat_field = map_player_stat_field(stat_key)
+
+    if(stat_field)
+      # Look for an existing player_stat item
+      player_stat = Model::PlayerStat.find_by_event_id_and_person_id_and_team_id_and_game_id(event_id, person_id, team_id, game_id)
+
+      if (player_stat == nil)
+        player_stat = Model::PlayerStat.create(event_id: event_id, person_id: person_id, team_id: team_id, game_id: game_id)
       end
 
+      player_stat[stat_field] = stat_value
+
+      # Report any errors
+      if(not player_stat.save)
+        player_stat.errors.messages.each {|m| logger.error(m)}
+      end
+      
+      logger.debug "  updated player_data: #{player_stat.inspect}"
+    # Create a generic stat if a field is not available
+    else
+      stat = find_or_create_stat(stat_key, stat_value)
       logger.debug "   Using stat: #{stat.title}"
 
       # Find or create stat_data
       stat_data = nil
       stat_data_attr = {
-        value: components_l[1],
-        event_id: event.id,
+        value: stat_value,
+        event_id: event_id,
         stat_id: stat.id
       }
 
-      # Could be a person stat, team stat, game stat, or event stat
-      # TBD: Support team stat and event-only stat properly
-      if (person != nil)
-        stat_data_attr[:person_id] = person.id
-        stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id(event.id, person.id, stat.id)
-      else # game
-        stat_data_attr[:game_id] = game.id
-        stat_data = Model::StatData.find_by_event_id_and_game_id_and_stat_id(event.id, game.id, stat.id)
-      end
+      # Person guaranteed to be non-nil here
+      stat_data_attr[:person_id] = person_id
+      stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id(event_id, person_id, stat.id)
 
       # Create or update stat
       if (stat_data == nil)
@@ -119,12 +153,21 @@ module SportDb
         stat_data = Model::StatData.update_attributes!(stat_data_attr)
       end
 
-      # Stats not getting parsed correctly... print out stat and value
       logger.debug "   Saved stat_data: #{stat_data.inspect}"
+    end # if !stat_field
 
-    end # each stat
+  end
 
-    return true
+  # Try to find an existing generic stat.  If none exists,
+  # create a new one.  Return the stat that was found or created
+  def find_or_create_stat(stat_key, stat_value)
+    # Find or create a stat
+    stat = Model::Stat.find_by_key(stat_key)
+    if (stat == nil)
+      stat = Model::Stat.create(key: stat_key, title: stat_key)
+    end
+    
+    return stat
   end
 
   end # module FixtureHelpers
