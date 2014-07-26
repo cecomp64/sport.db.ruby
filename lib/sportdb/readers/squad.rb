@@ -93,7 +93,7 @@ class SquadReader
       cut_off_end_of_line_comment!( line )
 
       # Check for a stats line
-      if (parse_stats(line, @event, last_person, nil))
+      if (parse_stats(line, @event, last_person, @team))
         # Stats will be their own line following a player
         logger.debug "   Parsed stats from line, moving to next line: #{line}"
         next

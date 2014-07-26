@@ -54,7 +54,7 @@ module SportDb
   # person/game.  Update the corresponding statistic
   #
   # Returns true if this line is a stats line
-  def parse_stats (line, event, person=nil, game=nil)
+  def parse_stats (line, event, person=nil, team = nil, game=nil)
 
     # For simplicity, have stat lines start with $$
     if (not (line =~ /^\$\$/))
@@ -81,7 +81,7 @@ module SportDb
         next
       end
 
-      parse_player_stat(components_l[0].strip, components_l[1].strip, event.id, person.id)
+      parse_player_stat(components_l[0].strip, components_l[1].strip, event.id, person.id, team.id)
 
     end # each stat
 
@@ -93,9 +93,11 @@ module SportDb
   def map_player_stat_field(key)
     case key
       # Identity mapping
-      when "starts", "subIns", "saves", "goalsConceded", "foulsCommitted", "foulsSuffered", "yellowCards", "redCards", "wins", "losses", "draws", "totalGoals", "totalShots", "shotsOnTarget", "goalAssists"
+      when "starts", "subIns", "saves", "goalsConceded", "foulsCommitted", "foulsSuffered", "yellowCards", "redCards", "wins", "losses", "draws", "totalGoals", "totalShots", "shotsOnTarget", "goalAssists", "minutesPlayed", "position"
         return key
       # Any aliases...
+      when "pos"
+        return "position"
     #default
     else
       return nil
@@ -137,12 +139,13 @@ module SportDb
       stat_data_attr = {
         value: stat_value,
         event_id: event_id,
-        stat_id: stat.id
+        stat_id: stat.id,
+        team_id: team_id
       }
 
       # Person guaranteed to be non-nil here
       stat_data_attr[:person_id] = person_id
-      stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id(event_id, person_id, stat.id)
+      stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id_and_team_id(event_id, person_id, stat.id, team.id)
 
       # Create or update stat
       if (stat_data == nil)

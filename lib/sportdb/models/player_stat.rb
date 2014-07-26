@@ -26,6 +26,7 @@ module SportDb
 # starts
 # saves
 # minutesPlayed
+# position
 #
 # See schema.rb for full definition
 

@@ -471,6 +471,7 @@ create_table :player_stats do |t|
   t.integer     :starts
   t.integer     :saves
   t.integer     :minutesPlayed
+  t.string      :position
   t.timestamps
 end
 
