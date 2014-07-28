@@ -293,7 +293,7 @@ module SportDb
 end  # module SportDb
 
 
-## SportDb::load_plugins
+#SportDb::load_plugins
 
 
 if __FILE__ == $0
