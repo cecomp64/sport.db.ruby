@@ -145,7 +145,7 @@ module SportDb
 
       # Person guaranteed to be non-nil here
       stat_data_attr[:person_id] = person_id
-      stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id_and_team_id(event_id, person_id, stat.id, team.id)
+      stat_data = Model::StatData.find_by_event_id_and_person_id_and_stat_id_and_team_id(event_id, person_id, stat.id, team_id)
 
       # Create or update stat
       if (stat_data == nil)
