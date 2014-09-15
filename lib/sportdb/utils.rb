@@ -116,9 +116,11 @@ module SportDb
     if(stat_field)
       # Look for an existing player_stat item
       player_stat = Model::PlayerStat.find_by_event_id_and_person_id_and_team_id_and_game_id(event_id, person_id, team_id, game_id)
+      logger.debug("parse_player_stat: searching for PlayerStat person_id: #{person_id}, event_id: #{event_id}, team_id: #{team_id}, game_id: #{game_id}")
 
       if (player_stat == nil)
         player_stat = Model::PlayerStat.create(event_id: event_id, person_id: person_id, team_id: team_id, game_id: game_id)
+        logger.debug("parse_player_stat: PlayerStat not found person_id: #{person_id}, event_id: #{event_id}, team_id: #{team_id}, game_id: #{game_id}")
       end
 
       player_stat[stat_field] = stat_value

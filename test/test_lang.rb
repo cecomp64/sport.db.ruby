@@ -18,6 +18,7 @@ class TestLang < MiniTest::Unit::TestCase
      group = 'Group'
 
      round = 'Round|Matchday'
+     round << '|Week'
      round << '|Round of 32|Last 32'
      round << '|Round of 16|Last 16|8th finals'
      round << '|Quarterfinals|Quarter-finals|Quarters|Quarterfinal|Last 8'

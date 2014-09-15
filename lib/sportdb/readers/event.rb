@@ -143,6 +143,7 @@ class EventReader
         team_ids = []
         value.each do |item|
           team_key = item.to_s.strip
+          puts "team_key: #{team_key}"
           team = Team.find_by_key!( team_key )
           team_ids << team.id
         end
