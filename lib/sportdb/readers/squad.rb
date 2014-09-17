@@ -126,6 +126,7 @@ class SquadReader
         buf = buf.sub( /^[ ]*-[ ]*/, '' )
         buf = buf.gsub( /\[[^\]]+\]/, '' )         # remove [POS] or similar
         buf = buf.gsub( /\b(GK|DF|MF|FW)\b/, '' )   # remove position marker - use sub (just single marker?)
+        buf = buf.gsub( /\(--\)/, '' )   # remove a null position that was not parsed
         buf = buf.strip   # remove leading and trailing spaces
 
         ## assume what's left is player name

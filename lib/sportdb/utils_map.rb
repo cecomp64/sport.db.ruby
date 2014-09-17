@@ -31,10 +31,10 @@ module SportDb
     #   [POS] -- First Last
     #   TODO: Reuse code in squad reader for parsing line format
     if (key.nil?)
-      if (line =~ /\[POS\] (\S\S )?(\S+( \S+)?)/)
-        if (Person.find_by_name($2))
-          # Create a key out of the name in $2
-          key = TextUtils.title_to_key( $2 )
+      if (line =~ /((\[POS\])|(\(--\))) ((GK|DF|MF|FW) )?(\S+( \S+)?( \S+)?)/)
+        if (PersonDb::Model::Person.find_by_name($6))
+          # Create a key out of the name in $6
+          key = TextUtils.title_to_key( $6 )
           puts "+++ Debug: find_person alternate key: #{key}"
         end
       end
