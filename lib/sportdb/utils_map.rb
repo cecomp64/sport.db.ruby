@@ -24,7 +24,22 @@ module SportDb
   end
 
   def find_person!( line )
-    TextUtils.find_key_for!( 'person', line )
+    puts "+++ Debug: find_person line: #{line}"
+    key = TextUtils.find_key_for!( 'person', line )
+    
+    # Try looking for a different format
+    #   [POS] -- First Last
+    #   TODO: Reuse code in squad reader for parsing line format
+    if (key.nil?)
+      if (line =~ /\[POS\] (\S\S )?(\S+ \S+)/)
+        if (Person.find_by_name($2))
+          # Create a key out of the name in $2
+          key = TextUtils.title_to_key( $2 )
+          puts "+++ Debug: find_person alternate key: #{key}"
+        end
+      end
+    end
+    return key
   end
 
   def map_person!( line )

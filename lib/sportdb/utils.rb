@@ -155,7 +155,7 @@ module SportDb
         stat_data = Model::StatData.create(stat_data_attr)
       else
         logger.debug "   Using existing stat data: #{stat_data.inspect}"
-        stat_data = Model::StatData.update_attributes!(stat_data_attr)
+        stat_data.update(stat_data_attr)
       end
 
       logger.debug "   Saved stat_data: #{stat_data.inspect}"
