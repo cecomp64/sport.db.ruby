@@ -31,3 +31,5 @@ build/
 
 *.swp
 *.swo
+
+test.log

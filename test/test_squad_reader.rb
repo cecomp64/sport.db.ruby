@@ -161,6 +161,13 @@ class TestSquadReader < MiniTest::Unit::TestCase
   def check_mls_stats(event, team, updated=0)
     # Should be 28 people
     roster = SportDb::Model::Roster.where(:event_id => event.id, :team_id => team.id)
+    if (roster.count != 28)
+      puts "++ ROSTER MISMATCH ++"
+      roster.each do |r|
+        puts "++  #{r.person.name}"
+      end
+    end
+
     assert_equal 28, roster.count
 
     #   (25) Sean Johnson
