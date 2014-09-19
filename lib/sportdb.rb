@@ -131,6 +131,12 @@ require 'sportdb/data/keys'
 require 'sportdb/data/models'     # add convenience finders for known fixtures
 
 
+# Some helpful aliases
+PlayerStat = SportDb::Model::PlayerStat
+Person = PersonDb::Model::Person
+StatData = SportDb::Model::StatData
+TeamStat = SportDb::Model::TeamStat
+
 
 module SportDb
 
